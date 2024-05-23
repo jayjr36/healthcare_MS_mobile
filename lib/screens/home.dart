@@ -175,6 +175,9 @@ class HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                ElevatedButton(onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: ((context) => ScheduleScreen())));
+                }, child: Text('Schedule')),
                 Container(
                   height: 150,
                   child: PageView.builder(

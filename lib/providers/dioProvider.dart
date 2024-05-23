@@ -3,12 +3,12 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
-  String url = 'http://192.168.0.107:8000';
+  String url = 'http://192.168.0.105:8000';
   //to get token
-  Future<dynamic> getToken(String email, String password) async {
+  Future<dynamic> loginuser(String email, String password) async {
     try {
-      var response = await Dio().post('$url/api/login',
-          data: {'email': email, 'password': password});
+      var response = await Dio()
+          .post('$url/api/login', data: {'email': email, 'password': password});
 
       if (response.statusCode == 200 && response.data != '') {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,25 +37,25 @@ class DioProvider {
   }
 
   //to register new user
-  Future<bool> registerUser(String username, String email, String password) async {
-  try {
-    var user = await Dio().post(
-      '$url/api/register',
-      data: {'name': username, 'email': email, 'password': password},
-    );
+  Future<bool> registerUser(
+      String username, String email, String password) async {
+    try {
+      var user = await Dio().post(
+        '$url/api/register',
+        data: {'name': username, 'email': email, 'password': password},
+      );
 
-    if (user.statusCode == 201 && user.data != '') {
-      return true;
-    } else {
+      if (user.statusCode == 201 && user.data != '') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      // Optionally, log the error or handle it accordingly
+      print('Registration error: $error');
       return false;
     }
-  } catch (error) {
-    // Optionally, log the error or handle it accordingly
-    print('Registration error: $error');
-    return false;
   }
-}
-
 
   //store booking details
   Future<dynamic> bookAppointment(
@@ -78,8 +78,7 @@ class DioProvider {
   //retrieve booking details
   Future<dynamic> getAppointments(String token) async {
     try {
-      var response = await Dio().get(
-          '$url/api/appointments',
+      var response = await Dio().get('$url/api/appointments',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
       if (response.statusCode == 200 && response.data != '') {
@@ -115,19 +114,21 @@ class DioProvider {
     }
   }
 
-  Future<dynamic> fetchSchedules() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
+  Future<List<dynamic>> fetchSchedules(String token) async {
+    try {
+      final response = await Dio().get('$url/api/schedules',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
 
-    final response = await Dio().get(
-     '$url/api/Schedules',
-          options: Options(headers: {'Authorization': 'Bearer $token'})
-    );
-
-    if (response.statusCode == 200 && response.data != '') {
-        return json.encode(response.data);
+      if (response.statusCode == 200) {
+        print(response.data);  // Debug print
+        return response.data;
       } else {
-        return 'Error';
+        throw Exception('Failed to load schedules');
       }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to load schedules');
+    }
   }
-  }
+}
+

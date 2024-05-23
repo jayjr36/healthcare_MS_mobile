@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -13,10 +12,30 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   DioProvider dioProvider = DioProvider();
   List schedules = [];
 
-  @override 
+  @override
   void initState() {
     super.initState();
-    dioProvider.fetchSchedules();
+    loadPreferences();
+  }
+
+  loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null) {
+      fetchAndSetSchedules(token);
+    }
+  }
+
+  fetchAndSetSchedules(String token) async {
+    try {
+      List fetchedSchedules = await dioProvider.fetchSchedules(token);
+      setState(() {
+        schedules = fetchedSchedules;
+      });
+    } catch (e) {
+      print('Error fetching schedules: $e');
+      // Optionally show an error message
+    }
   }
 
   @override
@@ -35,17 +54,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'https://th.bing.com/th/id/OIP.bGWeq5kiCoCZU6qEPOb2zgHaIk?rs=1&pid=ImgDetMain'),
+                          schedule['doctor']['profile_photo_url']),
                     ),
                     title: Text('Dr. ${schedule['doctor']['name']}'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                            'Specialization: ${schedule['doctor']['specialization']}'),
+                        Text('Specialization: ${schedule['doctor']['specialization']}'),
                         Text('Date: ${schedule['date']}'),
-                        Text(
-                            'Time: ${schedule['start_time']} - ${schedule['end_time']}'),
+                        Text('Time: ${schedule['start_time']} - ${schedule['end_time']}'),
                       ],
                     ),
                   ),

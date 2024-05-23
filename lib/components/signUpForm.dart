@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/models/authModel.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
@@ -68,8 +67,10 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             validator: (val) {
               return RegExp(
-                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val!)
-                  ? null : "Please enter a valid email";
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(val!)
+                  ? null
+                  : "Please enter a valid email";
             },
             onChanged: (val) {
               setState(() {
@@ -103,9 +104,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         : const Icon(
                             Icons.visibility_outlined,
                             color: Config.primaryColor,
-                          )
-                )
-            ),
+                          ))),
             validator: (val) {
               if (val!.length < 6) {
                 return "Password must be at least 6 characters";
@@ -132,7 +131,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
                 if (userRegistration) {
                   final token = await DioProvider()
-                      .getToken(_emailController.text, _passController.text);
+                      .loginuser(_emailController.text, _passController.text);
 
                   if (token) {
                     auth.loginSuccess();
@@ -150,5 +149,3 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 }
-
-

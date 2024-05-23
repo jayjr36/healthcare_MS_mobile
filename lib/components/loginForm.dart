@@ -41,8 +41,10 @@ class LoginFormState extends State<LoginForm> {
             ),
             validator: (val) {
               return RegExp(
-                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val!)
-                  ? null : "Please enter a valid email";
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(val!)
+                  ? null
+                  : "Please enter a valid email";
             },
             onChanged: (val) {
               setState(() {
@@ -76,9 +78,7 @@ class LoginFormState extends State<LoginForm> {
                         : const Icon(
                             Icons.visibility_outlined,
                             color: Config.primaryColor,
-                          )
-                )
-            ),
+                          ))),
             validator: (val) {
               if (val!.length < 6) {
                 return "Password must be at least 6 characters";
@@ -93,24 +93,22 @@ class LoginFormState extends State<LoginForm> {
             },
           ),
           Config.spaceSmall,
-          Consumer<AuthModel>(
-            builder: (context, auth, child) {
-              return Button(
-                width: double.infinity,
-                title: 'Sign In',
-                onPressed: () async {
-                  final token = await DioProvider()
-                      .getToken(_emailController.text, _passController.text);          
+          Consumer<AuthModel>(builder: (context, auth, child) {
+            return Button(
+              width: double.infinity,
+              title: 'Sign In',
+              onPressed: () async {
+                final token = await DioProvider()
+                    .loginuser(_emailController.text, _passController.text);
 
-                  if (token) {
-                    auth.loginSuccess();
-                    MyApp.navigatorKey.currentState!.pushNamed('home');
-                  }                  
-                },
-                disable: false,
-              );
-            }
-          ),
+                if (token) {
+                  auth.loginSuccess();
+                  MyApp.navigatorKey.currentState!.pushNamed('home');
+                }
+              },
+              disable: false,
+            );
+          }),
         ],
       ),
     );
