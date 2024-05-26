@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/components/appDrawer.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
 import 'package:healthcare_management_system/screens/appointments.dart';
+import 'package:healthcare_management_system/screens/chats.dart';
 import 'package:healthcare_management_system/screens/messages.dart';
 import 'package:healthcare_management_system/screens/schedules.dart';
 import 'package:healthcare_management_system/screens/settings.dart';
@@ -21,7 +22,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-
   int _currentPage = 0;
   List<String> bannerImages = [
     'Assets/banner/1.jpg',
@@ -31,7 +31,7 @@ class HomeState extends State<Home> {
 
   Map<String, dynamic> user = {};
   Map<String, dynamic> doctor = {};
-  
+
   List<Map<String, dynamic>> medCat = [
     {
       "imageAsset": 'Assets/symptoms/fever.png',
@@ -91,7 +91,7 @@ class HomeState extends State<Home> {
   }
 
   @override
-  void initState() {    
+  void initState() {
     getData();
     super.initState();
   }
@@ -110,7 +110,13 @@ class HomeState extends State<Home> {
               Icons.favorite_border_outlined,
               color: Colors.blue,
             ),
-          )
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UsersScreen()));
+              },
+              child: Text('Chat page'))
         ],
       ),
       drawer: AppDrawer(
@@ -129,7 +135,9 @@ class HomeState extends State<Home> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Appointments(doctor: {},),
+              builder: (context) => Appointments(
+                doctor: {},
+              ),
             ),
           );
         },
@@ -137,7 +145,6 @@ class HomeState extends State<Home> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              
               builder: (context) => ScheduleScreen(),
             ),
           );
@@ -160,166 +167,170 @@ class HomeState extends State<Home> {
         },
         onLogoutPressed: () {},
       ),
-      body: user.isEmpty 
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-      : Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 15,
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                ElevatedButton(onPressed: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: ((context) => ScheduleScreen())));
-                }, child: Text('Schedule')),
-                Container(
-                  height: 150,
-                  child: PageView.builder(
-                    itemCount: bannerImages.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      return Image.asset(
-                        bannerImages[index],
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    bannerImages.length,
-                    (index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentPage == index
-                              ? Colors.blue
-                              : Colors.grey.withOpacity(0.5),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Config.spaceMedium,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Choose Your Symptoms",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SymptomsPage(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "View All",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.blue,
+      body: user.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 15,
+              ),
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: ((context) => ScheduleScreen())));
+                          },
+                          child: Text('Schedule')),
+                      Container(
+                        height: 150,
+                        child: PageView.builder(
+                          itemCount: bannerImages.length,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentPage = index;
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            return Image.asset(
+                              bannerImages[index],
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Config.spaceSmall,
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  height: 180,
-                  width: double.infinity,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children:
-                    List<Widget>.generate(medCat.length, (index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SymptomsPage(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          bannerImages.length,
+                          (index) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5),
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _currentPage == index
+                                    ? Colors.blue
+                                    : Colors.grey.withOpacity(0.5),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Config.spaceMedium,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Choose Your Symptoms",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        },
-                        child: Card(
-                          elevation: 5,
-                          color: Colors.white,
-                          child: Column(
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Image.asset(
-                                        medCat[index]['imageAsset'],
-                                        width: 80,
-                                        height: 80,
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        medCat[index]['category'],
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SymptomsPage(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "View All",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Config.spaceSmall,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        height: 180,
+                        width: double.infinity,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children:
+                              List<Widget>.generate(medCat.length, (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SymptomsPage(),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                elevation: 5,
+                                color: Colors.white,
+                                child: Column(
+                                  children: [
+                                    Flexible(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 30, vertical: 20),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Image.asset(
+                                              medCat[index]['imageAsset'],
+                                              width: 80,
+                                              height: 80,
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              medCat[index]['category'],
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            );
+                          }),
                         ),
-                      );
-                    }),
+                      ),
+                      Config.spaceMedium,
+                      Text(
+                        "Choose Your Doctor",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Column(
+                        children: List.generate(user['doctor'].length, (index) {
+                          return DoctorCard(
+                            route: 'doctor',
+                            doctor: user['doctor'][index],
+                          );
+                        }),
+                      )
+                    ],
                   ),
                 ),
-                Config.spaceMedium,
-                Text(
-                  "Choose Your Doctor",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Column(                  
-                  children: List.generate(user['doctor'].length, (index) {
-                    return DoctorCard(
-                      route: 'doctor', 
-                      doctor: user['doctor'][index],
-                    ); 
-                  }),
-                )
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

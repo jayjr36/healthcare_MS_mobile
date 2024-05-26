@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
-  String url = 'http://192.168.0.105:8000';
+  String url = 'http://192.168.0.107:8000';
   //to get token
   Future<dynamic> loginuser(String email, String password) async {
     try {
@@ -51,7 +51,6 @@ class DioProvider {
         return false;
       }
     } catch (error) {
-      // Optionally, log the error or handle it accordingly
       print('Registration error: $error');
       return false;
     }

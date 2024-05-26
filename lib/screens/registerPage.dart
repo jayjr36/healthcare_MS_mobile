@@ -8,6 +8,9 @@ import 'package:healthcare_management_system/utils/text.dart';
 class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    
+    double h = MediaQuery.of(context).size.height;
+    double w = MediaQuery.of(context).size.width;
     Config().init(context);
     return Scaffold(
       body: SingleChildScrollView(
@@ -18,29 +21,17 @@ class RegisterPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(
-                  child: Text(
-                    AppText.enText['welcome_text']!,
-                    style: const TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+               
                 Center(
                   child: SizedBox(
-                    width: 350,
-                    height: 100,
-                    child: Image.asset("Assets/home_banner.png"),
+                    width: w*0.3,
+                    height: h*0.3,
+                    child: Image.network(
+                        "https://img.clipart-library.com/2/clip-physicians/clip-physicians-17.jpg"),
+              
                   ),
                 ),
-                Center(
-                  child: SizedBox(
-                    width: 230,
-                    height: 280,
-                    child: Image.asset("Assets/register.png"),
-                  ),
-                ),
+               
                 Center(
                   child: Text(
                     AppText.enText['register_text']!,

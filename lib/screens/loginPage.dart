@@ -8,6 +8,8 @@ import 'package:healthcare_management_system/utils/text.dart';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double h = MediaQuery.of(context).size.height;
+    double w = MediaQuery.of(context).size.width;
     Config().init(context);
     return Scaffold(
       body: SingleChildScrollView(
@@ -19,33 +21,28 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Center(
+                  child: SizedBox(
+                    width: w*0.3,
+                    height: h*0.3,
+                    child: Image.network(
+                        "https://img.clipart-library.com/2/clip-physicians/clip-physicians-17.jpg"),
+                  ),
+                ),
+                Center(
                   child: Text(
-                    AppText.enText['welcome_text']!,
+                    'Meet Your Doctor',
                     style: const TextStyle(
-                      fontSize: 36,
+                      fontSize: 20,
+                      color: Color.fromARGB(255, 156, 16, 6),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                Center(
-                  child: SizedBox(
-                    width: 350,
-                    height: 100,
-                    child: Image.asset("Assets/home_banner.png"),
-                  ),
-                ),
-                Center(
-                  child: SizedBox(
-                    width: 230,
-                    height: 280,
-                    child: Image.asset("Assets/login.png"),
-                  ),
-                ),
-                Center(
+                 Center(
                   child: Text(
-                    AppText.enText['signIn_text']!,
+                    'Login To Your Account',
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -54,7 +51,7 @@ class LoginPage extends StatelessWidget {
                 LoginForm(),
                 Config.spaceSmall,
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text.rich(
                         TextSpan(
@@ -83,10 +80,7 @@ class LoginPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                  ]
-                )
-                  
-                
+                    ])
               ],
             ),
           ),
