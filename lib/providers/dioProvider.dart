@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
-  String url = 'http://192.168.0.107:8000';
+  String url = 'http://192.168.100.44:8000';
   //to get token
   Future<dynamic> loginuser(String email, String password) async {
     try {

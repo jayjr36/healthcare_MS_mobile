@@ -101,26 +101,11 @@ class HomeState extends State<Home> {
     Config().init(context);
     return Scaffold(
       appBar: CustomAppBar(
-        appTitle: "Welcome User!",
-        actions: [
-          IconButton(
-            color: Colors.white,
-            onPressed: () async {},
-            icon: const Icon(
-              Icons.favorite_border_outlined,
-              color: Colors.blue,
-            ),
-          ),
-          TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => UsersScreen()));
-              },
-              child: Text('Chat page'))
-        ],
+        appTitle: "Meet Your Doctor",
+        
       ),
       drawer: AppDrawer(
-        userName: "Uma Priyani",
+        userName: "Name",
         //user['name'],
         profilePictureUrl: 'Assets/profile1.jpg',
         onProfilePressed: () {
@@ -182,12 +167,7 @@ class HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: ((context) => ScheduleScreen())));
-                          },
-                          child: Text('Schedule')),
+                     
                       Container(
                         height: 150,
                         child: PageView.builder(
@@ -217,7 +197,7 @@ class HomeState extends State<Home> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: _currentPage == index
-                                    ? Colors.blue
+                                    ? Config.primaryColor
                                     : Colors.grey.withOpacity(0.5),
                               ),
                             );
@@ -225,91 +205,8 @@ class HomeState extends State<Home> {
                         ),
                       ),
                       Config.spaceMedium,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Choose Your Symptoms",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SymptomsPage(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "View All",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Config.spaceSmall,
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
-                        height: 180,
-                        width: double.infinity,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children:
-                              List<Widget>.generate(medCat.length, (index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SymptomsPage(),
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                elevation: 5,
-                                color: Colors.white,
-                                child: Column(
-                                  children: [
-                                    Flexible(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 30, vertical: 20),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Image.asset(
-                                              medCat[index]['imageAsset'],
-                                              width: 80,
-                                              height: 80,
-                                            ),
-                                            SizedBox(height: 8),
-                                            Text(
-                                              medCat[index]['category'],
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
+                    
+                     
                       Config.spaceMedium,
                       Text(
                         "Choose Your Doctor",

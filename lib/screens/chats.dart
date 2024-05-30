@@ -1,184 +1,6 @@
-// import 'dart:convert';
-
-// import 'package:flutter/material.dart';
-// import 'package:healthcare_management_system/providers/dioProvider.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:shared_preferences/shared_preferences.dart';
-
-// class UsersScreen extends StatefulWidget {
-//   @override
-//   State<UsersScreen> createState() => _UsersScreenState();
-// }
-
-// class _UsersScreenState extends State<UsersScreen> {
-//   String? token;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     loadpreferences();
-//   }
-
-//   loadpreferences() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     setState(() {
-//       token = prefs.getString('token');
-//     });
-//   }
-
-//   Future<List<User>> fetchUsers() async {
-//     String chaturl = DioProvider().url;
-//     final response = await http.get(Uri.parse('$chaturl/api/users'),
-//         headers: {'Authorization': 'Bearer $token'});
-//     if (response.statusCode == 200) {
-//       List jsonResponse = json.decode(response.body);
-//       return jsonResponse.map((user) => User.fromJson(user)).toList();
-//     } else {
-//       throw Exception('Failed to load users');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Users')),
-//       body: FutureBuilder<List<User>>(
-//         future: fetchUsers(),
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return Center(child: CircularProgressIndicator());
-//           } else if (snapshot.hasError) {
-//             return Center(child: Text('Error: ${snapshot.error}'));
-//           } else {
-//             final users = snapshot.data!;
-//             return ListView.builder(
-//               itemCount: users.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(users[index].name),
-//                   onTap: () {
-//                     Navigator.push(
-//                       context,
-//                       MaterialPageRoute(
-//                         builder: (context) => ChatScreen(user: users[index]),
-//                       ),
-//                     );
-//                   },
-//                 );
-//               },
-//             );
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
-
-// class ChatScreen extends StatefulWidget {
-//   final User user;
-
-//   ChatScreen({required this.user});
-
-//   @override
-//   State<ChatScreen> createState() => _ChatScreenState();
-// }
-
-// class _ChatScreenState extends State<ChatScreen> {
-//   String? token;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     loadpreference();
-//   }
-
-//   loadpreference() async {
-//     final pref = await SharedPreferences.getInstance();
-//     setState(() {
-//       token = pref.getString('token');
-//     });
-//   }
-
-//   Future<List<Message>> fetchMessages() async {
-//     String chaturl = DioProvider().url;
-//     final response = await http.get(
-//         Uri.parse('$chaturl/api/chats/${widget.user.id}'),
-//         headers: {'Authorization': 'Bearer $token'});
-//     if (response.statusCode == 200) {
-//       List jsonResponse = json.decode(response.body);
-//       return jsonResponse.map((message) => Message.fromJson(message)).toList();
-//     } else {
-//       throw Exception('Failed to load messages');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Chat with ${widget.user.name}')),
-//       body: FutureBuilder<List<Message>>(
-//         future: fetchMessages(),
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return Center(child: CircularProgressIndicator());
-//           } else if (snapshot.hasError) {
-//             return Center(child: Text('Error: ${snapshot.error}'));
-//           } else {
-//             final messages = snapshot.data!;
-//             return ListView.builder(
-//               itemCount: messages.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(messages[index].message),
-//                 );
-//               },
-//             );
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
-
-// class User {
-//   final int id;
-//   final String name;
-
-//   User({required this.id, required this.name});
-
-//   factory User.fromJson(Map<String, dynamic> json) {
-//     return User(
-//       id: json['id'],
-//       name: json['name'],
-//     );
-//   }
-// }
-
-// class Message {
-//   final int id;
-//   final int senderId;
-//   final int receiverId;
-//   final String message;
-
-//   Message({
-//     required this.id,
-//     required this.senderId,
-//     required this.receiverId,
-//     required this.message,
-//   });
-
-//   factory Message.fromJson(Map<String, dynamic> json) {
-//     return Message(
-//       id: json['id'],
-//       senderId: json['sender_id'],
-//       receiverId: json['receiver_id'],
-//       message: json['message'],
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
+import 'package:healthcare_management_system/utils/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -206,8 +28,8 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   Future<List<User>> fetchUsers() async {
-    final response = await http.get(Uri.parse('$url/api/users')
-    ,headers: {'Authorization': 'Bearer $token'});
+    final response = await http.get(Uri.parse('$url/api/users'),
+        headers: {'Authorization': 'Bearer $token'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((user) => User.fromJson(user)).toList();
@@ -219,7 +41,12 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Users')),
+      appBar: AppBar(
+          backgroundColor: Config.primaryColor,
+          title: Text(
+            'Contacts',
+            style: TextStyle(color: Colors.white),
+          )),
       body: FutureBuilder<List<User>>(
         future: fetchUsers(),
         builder: (context, snapshot) {
@@ -232,8 +59,7 @@ class _UsersScreenState extends State<UsersScreen> {
             return ListView.builder(
               itemCount: users.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(users[index].name),
+                return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -242,6 +68,14 @@ class _UsersScreenState extends State<UsersScreen> {
                       ),
                     );
                   },
+                  child: Card(
+                    elevation: 5,
+                    margin: EdgeInsets.all(10),
+                    child: Center(
+                        child: SizedBox(
+                            height: 30,
+                            child: Text(users[index].name.toUpperCase()))),
+                  ),
                 );
               },
             );
@@ -263,7 +97,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
- late Future<List<Message>> _messages;
+  late Future<List<Message>> _messages;
 
   @override
   void initState() {
@@ -329,8 +163,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = widget.user.id;
     return Scaffold(
-      appBar: AppBar(title: Text('Chat with ${widget.user.name}')),
+      appBar: AppBar(
+          backgroundColor: Config.primaryColor,
+          title: Text(
+            '${widget.user.name}'.toUpperCase(),
+            style: TextStyle(color: Colors.white),
+          )),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -346,9 +186,29 @@ class _ChatScreenState extends State<ChatScreen> {
                   return ListView.builder(
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(messages[index].message),
-                      );
+                      final message = messages[index];
+                      final isCurrentUser = message.receiverId == currentUserId;
+                          return Row(
+                      mainAxisAlignment: isCurrentUser 
+                          ? MainAxisAlignment.end 
+                          : MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8.0),
+                          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: isCurrentUser ? Colors.green[100] : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            message.message,
+                            style: TextStyle(
+                              color: isCurrentUser ? Colors.green : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
                     },
                   );
                 }

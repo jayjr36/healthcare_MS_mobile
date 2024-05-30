@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/screens/appointments.dart';
+import 'package:healthcare_management_system/screens/chats.dart';
 import 'package:healthcare_management_system/screens/home.dart';
 import 'package:healthcare_management_system/screens/messages.dart';
+import 'package:healthcare_management_system/screens/schedules.dart';
 import 'package:healthcare_management_system/screens/symptomsPage.dart';
 
 
@@ -28,9 +30,9 @@ class LayoutState extends State<Layout> {
         }),
         children: <Widget>[
           Home(),
-          SymptomsPage(),
+          ScheduleScreen(),
           Appointments(doctor: {},),          
-          Messages(),
+          UsersScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -52,7 +54,7 @@ class LayoutState extends State<Layout> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sick),
-            label: "Symptoms",
+            label: "Schedule",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.medical_services),
@@ -60,7 +62,7 @@ class LayoutState extends State<Layout> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
-            label: "Messages",
+            label: "Chat",
           ),
         ],
       ),

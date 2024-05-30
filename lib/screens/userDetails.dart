@@ -53,9 +53,9 @@ class _UserDetailsState extends State<UserDetails> {
             children: <Widget>[
               CircleAvatar(
                 radius: 80.0,
-                backgroundImage: AssetImage(
-                    'Assets/profile1.jpg'
-                ), // Replace with user's profile picture URL
+                backgroundImage: NetworkImage(
+                    'https://th.bing.com/th/id/OIP.2hAVCZRMcBjsE8AGQfWCVQHaHa?rs=1&pid=ImgDetMain'
+                ), 
               ),
               SizedBox(height: 20.0),
               // Arrange user information fields in two columns, filling first and third

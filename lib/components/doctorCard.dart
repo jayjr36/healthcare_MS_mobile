@@ -27,8 +27,9 @@ class DoctorCard extends StatelessWidget {
                 width: Config.widthSize * 0.28,
                 height: Config.heightSize * 0.28,  
                 child: Image.network(
-                  "http://192.168.43.214:8000${doctor['doctor_profile']}",
-                  fit: BoxFit.cover,
+                  "https://th.bing.com/th/id/OIP.2hAVCZRMcBjsE8AGQfWCVQHaHa?rs=1&pid=ImgDetMain",
+                 // "http://192.168.43.214:8000${doctor['doctor_profile']}",
+                  fit: BoxFit.contain,
                 ),
               ),
               Flexible(
@@ -39,7 +40,7 @@ class DoctorCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Dr. ${doctor['doctor_name']}",
+                        "Dr. ${doctor['doctor_name']}".toUpperCase(),
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

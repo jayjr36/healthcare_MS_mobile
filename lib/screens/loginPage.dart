@@ -4,6 +4,7 @@ import 'package:healthcare_management_system/components/loginForm.dart';
 import 'package:healthcare_management_system/screens/registerPage.dart';
 import 'package:healthcare_management_system/utils/config.dart';
 import 'package:healthcare_management_system/utils/text.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -11,19 +12,22 @@ class LoginPage extends StatelessWidget {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
     Config().init(context);
+
+    bool isloading = false;
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: SafeArea(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Center(
                   child: SizedBox(
-                    width: w*0.3,
-                    height: h*0.3,
+                    width: w * 0.3,
+                    height: h * 0.3,
                     child: Image.network(
                         "https://img.clipart-library.com/2/clip-physicians/clip-physicians-17.jpg"),
                   ),
@@ -38,7 +42,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                 Center(
+                Center(
                   child: Text(
                     'Login To Your Account',
                     style: const TextStyle(

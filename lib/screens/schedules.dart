@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
+import 'package:healthcare_management_system/utils/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -42,7 +43,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Doctor Schedules'),
+        backgroundColor: Config.primaryColor,
+        title: Text('Doctor Schedules', style: TextStyle(color: Colors.white),),
       ),
       body: schedules.isEmpty
           ? Center(child: CircularProgressIndicator())
@@ -51,6 +53,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               itemBuilder: (context, index) {
                 var schedule = schedules[index];
                 return Card(
+                  shadowColor: Colors.red,
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(

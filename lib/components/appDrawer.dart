@@ -34,10 +34,10 @@ class AppDrawer extends StatelessWidget {
             accountName: Text(userName),
             accountEmail: null, 
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage(profilePictureUrl),
+              backgroundImage: NetworkImage("https://th.bing.com/th/id/OIP.2hAVCZRMcBjsE8AGQfWCVQHaHa?rs=1&pid=ImgDetMain"),
             ),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Config.primaryColor,
             ),
           ),
           ListTile(
@@ -50,21 +50,7 @@ class AppDrawer extends StatelessWidget {
             title: Text('Appointments'),
             onTap: onAppointmentPressed,
           ),
-          ListTile(
-            leading: Icon(Icons.sick),
-            title: Text('Symptoms'),
-            onTap: onSymptomsPressed,
-          ),
-          ListTile(
-            leading: Icon(Icons.message),
-            title: Text('Messages'),
-            onTap: onNotificationsPressed,
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: onSettingsPressed,
-          ),
+        
           Config.spaceMedium,    
           ListTile(
             onTap: () async {
