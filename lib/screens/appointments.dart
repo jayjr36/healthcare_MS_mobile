@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:healthcare_management_system/main.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
@@ -22,12 +23,21 @@ class AppointmentsState extends State<Appointments> {
   FilterStatus status = FilterStatus.Upcoming;
   Alignment _alignment = Alignment.centerLeft;
   List<dynamic> schedules = [];
+  String? token;
+
+  loadpreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token') ?? '';
+    });
+    getAppointments();
+  }
 
   Future<void> getAppointments() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
 
-    final appointment = await DioProvider().getAppointments(token);
+    final appointment = await DioProvider().getUpcomingAppointments(token);
     if (appointment != 'Error') {
       setState(() {
         schedules = json.decode(appointment);
@@ -38,8 +48,9 @@ class AppointmentsState extends State<Appointments> {
 
   @override
   void initState() {
-    getAppointments();
+    // getAppointments();
     super.initState();
+    loadpreferences();
   }
 
   @override
@@ -52,7 +63,7 @@ class AppointmentsState extends State<Appointments> {
         case 'completed':
           schedule['status'] = FilterStatus.Completed;
           break;
-        case 'canceled':
+        case 'cancelled':
           schedule['status'] = FilterStatus.Canceled;
           break;
       }
@@ -228,7 +239,8 @@ class AppointmentsState extends State<Appointments> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   onPressed: () {
-                                    if (widget.doctor != null && widget.doctor['appointments'] != null) {
+                                    if (widget.doctor != null &&
+                                        widget.doctor['appointments'] != null) {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
@@ -249,32 +261,37 @@ class AppointmentsState extends State<Appointments> {
                                                     fontSize: 15,
                                                   ),
                                                 ),
-                                                image: const FlutterLogo(
-                                                  size: 100,
-                                                ),
+                                                // image: const FlutterLogo(
+                                                //   size: 100,
+                                                // ),
                                                 submitButtonText: 'Submit',
                                                 commentHint: 'Your Reviews',
                                                 onSubmitted: (response) async {
-                                                  final SharedPreferences prefs =
-                                                      await SharedPreferences.getInstance();
-                                                  final token =
-                                                      prefs.getString('token') ?? '';
-
-                                                  final rating = await DioProvider().storeReviews(
-                                                      response.comment,
-                                                      response.rating,
-                                                      schedule['id'], // Pass the appointment ID
-                                                      schedule['doctor_id'], // Pass the doctor ID
-                                                      token);
+                                                  final rating =
+                                                      await DioProvider()
+                                                          .storeReviews(
+                                                              response.comment,
+                                                              response.rating,
+                                                              schedule['id'],
+                                                              schedule[
+                                                                  'doctor_id'],
+                                                              token!);
 
                                                   if (rating == 200) {
-                                                    MyApp.navigatorKey.currentState!.pushNamed('login');
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            'Thanks for your time',
+                                                        backgroundColor:
+                                                            Colors.green);
+                                                    MyApp.navigatorKey
+                                                        .currentState!
+                                                        .pushNamed('home');
                                                   }
                                                 });
-                                          }
-                                      );
+                                          });
                                     } else {
-                                      print('Error: Doctor or appointments data is null');
+                                      print(
+                                          'Error: Doctor or appointments data is null');
                                     }
                                   },
                                 ),
@@ -288,10 +305,13 @@ class AppointmentsState extends State<Appointments> {
                                     backgroundColor: Colors.red,
                                   ),
                                   child: const Text(
-                                    'Canceled',
+                                    'Cancel',
                                     style: TextStyle(color: Colors.white),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    DioProvider().cancelAppointment(
+                                        schedule['id'], token!);
+                                  },
                                 ),
                               ),
                             ],
@@ -312,8 +332,7 @@ class AppointmentsState extends State<Appointments> {
 
 class ScheduleCard extends StatelessWidget {
   const ScheduleCard(
-      {Key? key, required this.date, required this.day, required this.time
-      })
+      {Key? key, required this.date, required this.day, required this.time})
       : super(key: key);
 
   final String date;
@@ -331,7 +350,7 @@ class ScheduleCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           const Icon(
             Icons.calendar_today,

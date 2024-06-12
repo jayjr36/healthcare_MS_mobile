@@ -32,48 +32,6 @@ class HomeState extends State<Home> {
   Map<String, dynamic> user = {};
   Map<String, dynamic> doctor = {};
 
-  List<Map<String, dynamic>> medCat = [
-    {
-      "imageAsset": 'Assets/symptoms/fever.png',
-      "category": "  Fever  ",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/dental.png',
-      "category": "  Dental  ",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/eyecare.png',
-      "category": "Eye Care",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/stress.png',
-      "category": "  Stress  ",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/cardiology.png',
-      "category": "Cardiology",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/dermatology.png',
-      "category": "Dermatology",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/respirations.png',
-      "category": "Respirations",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/cholesterol.png',
-      "category": "Cholesterol",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/diabetes.png',
-      "category": "Diabetes",
-    },
-    {
-      "imageAsset": 'Assets/symptoms/virus.png',
-      "category": "Virus",
-    },
-  ];
 
   Future<void> getData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -92,8 +50,9 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-    getData();
+  
     super.initState();
+      getData();
   }
 
   @override

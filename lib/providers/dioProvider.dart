@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:healthcare_management_system/models/patient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class DioProvider {
   String url = 'http://192.168.100.44:8000';
@@ -45,7 +49,7 @@ class DioProvider {
         data: {'name': username, 'email': email, 'password': password},
       );
 
-      if (user.statusCode == 201 && user.data != '') {
+      if (user.statusCode == 200 && user.data != '') {
         return true;
       } else {
         return false;
@@ -75,9 +79,39 @@ class DioProvider {
   }
 
   //retrieve booking details
-  Future<dynamic> getAppointments(String token) async {
+  Future<dynamic> getUpcomingAppointments(String token) async {
     try {
       var response = await Dio().get('$url/api/appointments',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+
+      if (response.statusCode == 200 && response.data != '') {
+        return json.encode(response.data);
+      } else {
+        return 'Error';
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+
+  Future<dynamic> getCompletedAppointments(String token) async {
+    try {
+      var response = await Dio().get('$url/api/appointments/completed',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+
+      if (response.statusCode == 200 && response.data != '') {
+        return json.encode(response.data);
+      } else {
+        return 'Error';
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+
+  Future<dynamic> getCancelledAppointments(String token) async {
+    try {
+      var response = await Dio().get('$url/api/appointments/canceled',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
       if (response.statusCode == 200 && response.data != '') {
@@ -119,7 +153,7 @@ class DioProvider {
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
       if (response.statusCode == 200) {
-        print(response.data);  // Debug print
+        print(response.data); // Debug print
         return response.data;
       } else {
         throw Exception('Failed to load schedules');
@@ -129,5 +163,55 @@ class DioProvider {
       throw Exception('Failed to load schedules');
     }
   }
-}
 
+  Future<void> savePatientDetails(Patient patient, String token) async {
+    final response = await http.post(
+      Uri.parse('$url/store/patient-details'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token,
+      },
+      body: jsonEncode({
+        'first_name': patient.firstName,
+        'last_name': patient.lastName,
+        'email': patient.email,
+        'contact_number': patient.contactNumber,
+        'date_of_birth': patient.dateOfBirth,
+        'gender': patient.gender,
+        'blood_group': patient.bloodGroup,
+        'marital_status': patient.maritalStatus,
+        'height': patient.height,
+        'weight': patient.weight,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      Fluttertoast.showToast(
+          msg: 'Profile saved successfully', backgroundColor: Colors.green);
+      print('Profile saved successfully');
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Failed to save profile', backgroundColor: Colors.red);
+    }
+  }
+
+  Future<void> cancelAppointment(int appointmentId, String token) async {
+    final apiUrl = "$url/appointments/$appointmentId/cancel";
+
+    final response = await http.patch(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization':
+            token, 
+      },
+    );
+
+    if (response.statusCode == 200) {
+     
+      Fluttertoast.showToast(msg:'Appointment cancelled successfully', backgroundColor: Colors.green);
+    } else {
+      Fluttertoast.showToast(msg:'Failed to cancel appointment', backgroundColor: Colors.red);
+    }
+  }
+}
