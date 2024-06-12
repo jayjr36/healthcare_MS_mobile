@@ -37,7 +37,7 @@ class AppointmentsState extends State<Appointments> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
 
-    final appointment = await DioProvider().getUpcomingAppointments(token);
+    final appointment = await DioProvider().getAppointments(token);
     if (appointment != 'Error') {
       setState(() {
         schedules = json.decode(appointment);

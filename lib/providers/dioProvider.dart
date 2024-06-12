@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,22 +8,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class DioProvider {
-  String url = 'http://192.168.100.44:8000';
+  String url = 'http://192.168.0.109:8000';
   //to get token
-  Future<dynamic> loginuser(String email, String password) async {
+  Future<bool> loginUser(String email, String password) async {
     try {
-      var response = await Dio()
-          .post('$url/api/login', data: {'email': email, 'password': password});
+      var response = await Dio().post(
+        '$url/api/login',
+        data: {'email': email, 'password': password},
+      );
 
       if (response.statusCode == 200 && response.data != '') {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', response.data);
+        await prefs.setString('token', response.data['token']);
         return true;
       } else {
+        print('Login failed with status code: ${response.statusCode}');
         return false;
       }
-    } catch (error) {
-      print(error);
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.other && e.error is SocketException) {
+        print('SocketException: ${e.error}');
+      } else if (e.type == DioErrorType.connectTimeout) {
+        print('Connection Timeout Exception: ${e.message}');
+      } else if (e.type == DioErrorType.receiveTimeout) {
+        print('Receive Timeout Exception: ${e.message}');
+      } else {
+        print('DioError: ${e.message}');
+      }
+      return false;
+    } catch (e) {
+      print('Unexpected error: $e');
+      return false;
     }
   }
 
@@ -79,7 +95,7 @@ class DioProvider {
   }
 
   //retrieve booking details
-  Future<dynamic> getUpcomingAppointments(String token) async {
+  Future<dynamic> getAppointments(String token) async {
     try {
       var response = await Dio().get('$url/api/appointments',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
@@ -202,16 +218,17 @@ class DioProvider {
       Uri.parse(apiUrl),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization':
-            token, 
+        'Authorization': token,
       },
     );
 
     if (response.statusCode == 200) {
-     
-      Fluttertoast.showToast(msg:'Appointment cancelled successfully', backgroundColor: Colors.green);
+      Fluttertoast.showToast(
+          msg: 'Appointment cancelled successfully',
+          backgroundColor: Colors.green);
     } else {
-      Fluttertoast.showToast(msg:'Failed to cancel appointment', backgroundColor: Colors.red);
+      Fluttertoast.showToast(
+          msg: 'Failed to cancel appointment', backgroundColor: Colors.red);
     }
   }
 }

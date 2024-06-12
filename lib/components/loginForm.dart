@@ -115,7 +115,7 @@ class LoginFormState extends State<LoginForm> {
                       isloading = true;
                     });
                     final token = await DioProvider()
-                        .loginuser(_emailController.text, _passController.text);
+                        .loginUser(_emailController.text, _passController.text);
       
                     if (token) {
                       auth.loginSuccess();

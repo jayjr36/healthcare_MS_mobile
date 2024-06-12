@@ -146,7 +146,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         _passController.text);
 
                     if (userRegistration) {
-                      final token = await DioProvider().loginuser(
+                      final token = await DioProvider().loginUser(
                           _emailController.text, _passController.text);
 
                       if (token) {
