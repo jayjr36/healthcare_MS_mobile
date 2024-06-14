@@ -17,10 +17,16 @@ class DioProvider {
         data: {'email': email, 'password': password},
       );
 
-      if (response.statusCode == 200 && response.data != '') {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', response.data['token']);
-        return true;
+      if (response.statusCode == 200 && response.data != null) {
+        // Check if the response data is a string
+        if (response.data is String) {
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', response.data);
+          return true;
+        } else {
+          print('Invalid response data format: ${response.data}');
+          return false;
+        }
       } else {
         print('Login failed with status code: ${response.statusCode}');
         return false;
@@ -181,13 +187,15 @@ class DioProvider {
   }
 
   Future<void> savePatientDetails(Patient patient, String token) async {
-    final response = await http.post(
-      Uri.parse('$url/store/patient-details'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': token,
-      },
-      body: jsonEncode({
+  
+    try {
+      final response = await http.post(
+        Uri.parse('$url.api/store/patient-details'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+          body: jsonEncode({
         'first_name': patient.firstName,
         'last_name': patient.lastName,
         'email': patient.email,
@@ -196,20 +204,41 @@ class DioProvider {
         'gender': patient.gender,
         'blood_group': patient.bloodGroup,
         'marital_status': patient.maritalStatus,
-        'height': patient.height,
-        'weight': patient.weight,
+        'height': 20,
+        'weight': 40,
       }),
     );
-
+      print('Full response: $response');
     if (response.statusCode == 201) {
       Fluttertoast.showToast(
           msg: 'Profile saved successfully', backgroundColor: Colors.green);
       print('Profile saved successfully');
     } else {
       Fluttertoast.showToast(
-          msg: 'Failed to save profile', backgroundColor: Colors.red);
+          msg: 'Failed to save profile: ${response.reasonPhrase}',
+          backgroundColor: Colors.red);
+      print('Failed to save profile: ${response.body}');
     }
+  } on http.ClientException catch (e) {
+    Fluttertoast.showToast(
+        msg: 'Client error: ${e.message}', backgroundColor: Colors.red);
+    print('Client error: ${e.message}');
+  } on SocketException {
+    Fluttertoast.showToast(
+        msg: 'No internet connection', backgroundColor: Colors.red);
+    print('No internet connection');
+  } on FormatException {
+    Fluttertoast.showToast(
+        msg: 'Bad response format', backgroundColor: Colors.red);
+    print('Bad response format');
+    // Print full response for debugging
+   
+  } catch (e) {
+    Fluttertoast.showToast(
+        msg: 'Unexpected error: $e', backgroundColor: Colors.red);
+    print('Unexpected error: $e');
   }
+}
 
   Future<void> cancelAppointment(int appointmentId, String token) async {
     final apiUrl = "$url/appointments/$appointmentId/cancel";

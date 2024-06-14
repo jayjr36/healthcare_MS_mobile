@@ -239,8 +239,7 @@ class AppointmentsState extends State<Appointments> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   onPressed: () {
-                                    if (widget.doctor != null &&
-                                        widget.doctor['appointments'] != null) {
+                                    if (schedule != null) {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
