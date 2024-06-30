@@ -14,11 +14,7 @@ class UsersScreen extends StatefulWidget {
 class _UsersScreenState extends State<UsersScreen> {
   String? token;
   String url = DioProvider().url;
-  @override
-  void initState() {
-    super.initState();
-    loadpreference();
-  }
+ 
 
   loadpreference() async {
     final pref = await SharedPreferences.getInstance();
@@ -38,10 +34,16 @@ class _UsersScreenState extends State<UsersScreen> {
     }
   }
 
+ @override
+  void initState() {
+    super.initState();
+    loadpreference();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: null,
           backgroundColor: Config.primaryColor,
           title: Text(
             'Contacts',
@@ -99,14 +101,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   late Future<List<Message>> _messages;
 
-  @override
-  void initState() {
-    super.initState();
-    loadpreference();
-    _messages = fetchMessages();
-    _startMessageFetching();
-  }
-
   String? token;
   String url = DioProvider().url;
 
@@ -115,6 +109,8 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       token = pref.getString('token');
     });
+   
+    _startMessageFetching();
   }
 
   Future<List<Message>> fetchMessages() async {
@@ -153,12 +149,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _startMessageFetching() {
     Future.doWhile(() async {
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 2));
       setState(() {
         _messages = fetchMessages();
       });
       return true;
     });
+  }
+
+ @override
+  void initState() {
+    super.initState();
+    loadpreference();
+   //  _messages = fetchMessages();
   }
 
   @override

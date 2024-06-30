@@ -23,6 +23,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
+  final _passController2 = TextEditingController();
   bool obsecurePass = true;
   bool isloading = false;
   @override
@@ -119,8 +120,8 @@ class _SignUpFormState extends State<SignUpForm> {
                                 color: Config.primaryColor,
                               ))),
                 validator: (val) {
-                  if (val!.length < 6) {
-                    return "Password must be at least 6 characters";
+                  if (val!.length < 8) {
+                    return "Password must be at least 8 characters";
                   } else {
                     return null;
                   }
@@ -131,6 +132,47 @@ class _SignUpFormState extends State<SignUpForm> {
                   });
                 },
               ),
+              Config.spaceSmall,
+              TextFormField(
+                controller: _passController2,
+                keyboardType: TextInputType.visiblePassword,
+                cursorColor: Config.primaryColor,
+                obscureText: obsecurePass,
+                decoration: InputDecoration(
+                    hintText: 'Confirm Password',
+                    labelText: 'Confirm Password',
+                    alignLabelWithHint: true,
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    prefixIconColor: Config.primaryColor,
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obsecurePass = !obsecurePass;
+                          });
+                        },
+                        icon: obsecurePass
+                            ? const Icon(
+                                Icons.visibility_off_outlined,
+                                color: Colors.black38,
+                              )
+                            : const Icon(
+                                Icons.visibility_outlined,
+                                color: Config.primaryColor,
+                              ))),
+                validator: (val) {
+                  if (_passController.text != _passController2.text) {
+                    return "Passwords do not match";
+                  } else {
+                    return null;
+                  }
+                },
+                onChanged: (val) {
+                  setState(() {
+                    password = val;
+                  });
+                },
+              ),
+
               Config.spaceSmall,
               Consumer<AuthModel>(builder: (context, auth, child) {
                 return Button(

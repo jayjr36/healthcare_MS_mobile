@@ -132,48 +132,6 @@ class PaymentState extends State<Payment> {
                 });
               },
             ),
-            const SizedBox(height: 35.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  'Channeling',
-                  style: TextStyle(fontSize: 18),
-                ),
-                Text(
-                  'Rs. 350',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            const SizedBox(height: 1 * 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  'Discounts',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-                Text(
-                  '- Rs. 50',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-              ],
-            ),
-            const SizedBox(height: 1 * 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  'Total',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Rs. 300',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
             const SizedBox(height: 8.0),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -302,7 +260,7 @@ class TryAgain extends StatelessWidget {
 }
 
 bool isValidCardNumber(String cardNumber) {
-  return cardNumber.isNotEmpty && cardNumber.length == 16;
+  return cardNumber.isNotEmpty && cardNumber.length == 13;
 }
 
 bool isValidCvv(String cvv) {

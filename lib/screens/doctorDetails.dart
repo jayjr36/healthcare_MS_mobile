@@ -143,7 +143,8 @@ class DetailBody extends StatelessWidget {
           DoctorInfo(
             patients: 4,
            // patients: doctor["patients"],
-            exp: doctor["experience"],
+           exp: 4,
+           // exp: doctor["experience"],
           ),
           Config.spaceSmall,
           Row(
@@ -159,7 +160,7 @@ class DetailBody extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               Text(
-                "Rs. 350",
+                "Tshs. 10000",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
@@ -189,7 +190,7 @@ class DoctorInfo extends StatelessWidget {
       children: <Widget>[
         InfoCard(
           label: "Patients",
-          value: "$patients",
+          value: "6",
         ),
         const SizedBox(
           width: 15,

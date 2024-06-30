@@ -9,6 +9,8 @@ import 'package:healthcare_management_system/screens/schedules.dart';
 import 'package:healthcare_management_system/screens/settings.dart';
 import 'package:healthcare_management_system/screens/symptomsPage.dart';
 import 'package:healthcare_management_system/screens/userDetails.dart';
+import 'package:healthcare_management_system/screens/video/video2.dart';
+import 'package:healthcare_management_system/screens/video/videoscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/customAppbar.dart';
 import '../components/doctorCard.dart';
@@ -164,7 +166,9 @@ class HomeState extends State<Home> {
                         ),
                       ),
                       Config.spaceMedium,
-                    
+                    ElevatedButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: ((context) => VideoCal() )));
+                    }, child: Text('Video Call')),
                      
                       Config.spaceMedium,
                       Text(

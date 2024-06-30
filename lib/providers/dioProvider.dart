@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class DioProvider {
-  String url = 'http://192.168.0.109:8000';
+  String url = 'http://64.23.247.79:8015';
   //to get token
   Future<bool> loginUser(String email, String password) async {
     try {
@@ -187,7 +187,6 @@ class DioProvider {
   }
 
   Future<void> savePatientDetails(Patient patient, String token) async {
-  
     try {
       final response = await http.post(
         Uri.parse('$url.api/store/patient-details'),
@@ -195,69 +194,71 @@ class DioProvider {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-          body: jsonEncode({
-        'first_name': patient.firstName,
-        'last_name': patient.lastName,
-        'email': patient.email,
-        'contact_number': patient.contactNumber,
-        'date_of_birth': patient.dateOfBirth,
-        'gender': patient.gender,
-        'blood_group': patient.bloodGroup,
-        'marital_status': patient.maritalStatus,
-        'height': 20,
-        'weight': 40,
-      }),
-    );
+        body: jsonEncode({
+          'first_name': patient.firstName,
+          'last_name': patient.lastName,
+          'email': patient.email,
+          'contact_number': patient.contactNumber,
+          'date_of_birth': patient.dateOfBirth,
+          'gender': patient.gender,
+          'blood_group': patient.bloodGroup,
+          'marital_status': patient.maritalStatus,
+          'height': 20,
+          'weight': 40,
+        }),
+      );
       print('Full response: $response');
-    if (response.statusCode == 201) {
+      if (response.statusCode == 201) {
+        Fluttertoast.showToast(
+            msg: 'Profile saved successfully', backgroundColor: Colors.green);
+        print('Profile saved successfully');
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Failed to save profile: ${response.reasonPhrase}',
+            backgroundColor: Colors.red);
+        print('Failed to save profile: ${response.body}');
+      }
+    } on http.ClientException catch (e) {
       Fluttertoast.showToast(
-          msg: 'Profile saved successfully', backgroundColor: Colors.green);
-      print('Profile saved successfully');
-    } else {
+          msg: 'Client error: ${e.message}', backgroundColor: Colors.red);
+      print('Client error: ${e.message}');
+    } on SocketException {
       Fluttertoast.showToast(
-          msg: 'Failed to save profile: ${response.reasonPhrase}',
-          backgroundColor: Colors.red);
-      print('Failed to save profile: ${response.body}');
+          msg: 'No internet connection', backgroundColor: Colors.red);
+      print('No internet connection');
+    } on FormatException {
+      Fluttertoast.showToast(
+          msg: 'Bad response format', backgroundColor: Colors.red);
+      print('Bad response format');
+      // Print full response for debugging
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: 'Unexpected error: $e', backgroundColor: Colors.red);
+      print('Unexpected error: $e');
     }
-  } on http.ClientException catch (e) {
-    Fluttertoast.showToast(
-        msg: 'Client error: ${e.message}', backgroundColor: Colors.red);
-    print('Client error: ${e.message}');
-  } on SocketException {
-    Fluttertoast.showToast(
-        msg: 'No internet connection', backgroundColor: Colors.red);
-    print('No internet connection');
-  } on FormatException {
-    Fluttertoast.showToast(
-        msg: 'Bad response format', backgroundColor: Colors.red);
-    print('Bad response format');
-    // Print full response for debugging
-   
-  } catch (e) {
-    Fluttertoast.showToast(
-        msg: 'Unexpected error: $e', backgroundColor: Colors.red);
-    print('Unexpected error: $e');
   }
-}
 
   Future<void> cancelAppointment(int appointmentId, String token) async {
     final apiUrl = "$url/appointments/$appointmentId/cancel";
+    try {
+      final response = await http.patch(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token,
+        },
+      );
 
-    final response = await http.patch(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': token,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-          msg: 'Appointment cancelled successfully',
-          backgroundColor: Colors.green);
-    } else {
-      Fluttertoast.showToast(
-          msg: 'Failed to cancel appointment', backgroundColor: Colors.red);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+            msg: 'Appointment cancelled successfully',
+            backgroundColor: Colors.green);
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Failed to cancel appointment', backgroundColor: Colors.red);
+      }
+    } catch (e) {
+      print('error cancelling: $e');
     }
   }
 }
