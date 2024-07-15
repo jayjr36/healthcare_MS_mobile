@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 const appId = '1ff91545cedb4f4c91ab2eb157fdd07e';
-const appToken = "007eJxTYDh/c+IfC53d+4rNTjB/99PbMbtoRe0hUVfXC7xdG98djFFRYDBMS7M0NDUxTU5NSTJJM0m2NExMMkpNMjQ1T0tJMTBPVd+Tm9YQyMiQyenFxMgAgSA+G0NZZkpqvhEDAwDy5iC4";
+const appToken =
+    "007eJxTYDh/c+IfC53d+4rNTjB/99PbMbtoRe0hUVfXC7xdG98djFFRYDBMS7M0NDUxTU5NSTJJM0m2NExMMkpNMjQ1T0tJMTBPVd+Tm9YQyMiQyenFxMgAgSA+G0NZZkpqvhEDAwDy5iC4";
 const appChannel = "video2";
 
 void main() => runApp(const MaterialApp(home: VideoCal()));
@@ -96,7 +97,7 @@ class _VideoCalState extends State<VideoCal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agora Video Call'),
+        title: const Text('Video Call'),
       ),
       body: Stack(
         children: [

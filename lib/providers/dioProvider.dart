@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class DioProvider {
+// String url = 'http://192.168.246.22:8000';
   String url = 'http://64.23.247.79:8015';
   //to get token
   Future<bool> loginUser(String email, String password) async {
@@ -189,7 +190,7 @@ class DioProvider {
   Future<void> savePatientDetails(Patient patient, String token) async {
     try {
       final response = await http.post(
-        Uri.parse('$url.api/store/patient-details'),
+        Uri.parse('$url/api/store/patient-details'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -239,7 +240,7 @@ class DioProvider {
   }
 
   Future<void> cancelAppointment(int appointmentId, String token) async {
-    final apiUrl = "$url/appointments/$appointmentId/cancel";
+    final apiUrl = "$url/api/appointments/$appointmentId/cancel";
     try {
       final response = await http.patch(
         Uri.parse(apiUrl),
@@ -251,9 +252,11 @@ class DioProvider {
 
       if (response.statusCode == 200) {
         Fluttertoast.showToast(
-            msg: 'Appointment cancelled successfully',
+            msg: '${response.body}',
             backgroundColor: Colors.green);
       } else {
+        print(response.body);
+        print(response.statusCode);
         Fluttertoast.showToast(
             msg: 'Failed to cancel appointment', backgroundColor: Colors.red);
       }

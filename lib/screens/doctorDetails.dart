@@ -109,7 +109,7 @@ class DetailHead extends StatelessWidget {
           SizedBox(
             width: Config.widthSize * 0.75,
             child: const Text(
-              "Colombo General Hospital",
+              "DIT HOSPITAL",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
@@ -142,16 +142,16 @@ class DetailBody extends StatelessWidget {
         children: <Widget>[
           DoctorInfo(
             patients: 4,
-           // patients: doctor["patients"],
-           exp: 4,
-           // exp: doctor["experience"],
+            // patients: doctor["patients"],
+            exp: 4,
+            // exp: doctor["experience"],
           ),
           Config.spaceSmall,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const <Widget>[
               Text(
-                "Channeling Fee",
+                "Consultation Fee",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,

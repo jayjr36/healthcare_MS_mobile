@@ -17,7 +17,7 @@ class Appointments extends StatefulWidget {
   State<Appointments> createState() => AppointmentsState();
 }
 
-enum FilterStatus { Upcoming, Completed, Canceled }
+enum FilterStatus { Upcoming, Completed, Cancelled }
 
 class AppointmentsState extends State<Appointments> {
   FilterStatus status = FilterStatus.Upcoming;
@@ -63,8 +63,8 @@ class AppointmentsState extends State<Appointments> {
         case 'completed':
           schedule['status'] = FilterStatus.Completed;
           break;
-        case 'cancelled':
-          schedule['status'] = FilterStatus.Canceled;
+        case 'Cancelled':
+          schedule['status'] = FilterStatus.Cancelled;
           break;
       }
       return schedule['status'] == status;
@@ -115,8 +115,8 @@ class AppointmentsState extends State<Appointments> {
                                   status = FilterStatus.Completed;
                                   _alignment = Alignment.center;
                                 } else if (filterStatus ==
-                                    FilterStatus.Canceled) {
-                                  status = FilterStatus.Canceled;
+                                    FilterStatus.Cancelled) {
+                                  status = FilterStatus.Cancelled;
                                   _alignment = Alignment.centerRight;
                                 }
                               });

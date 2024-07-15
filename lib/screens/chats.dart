@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/providers/dioProvider.dart';
 import 'package:healthcare_management_system/utils/config.dart';
@@ -21,7 +23,7 @@ class _UsersScreenState extends State<UsersScreen> {
     setState(() {
       token = pref.getString('token');
     });
-  }
+  }  
 
   Future<List<User>> fetchUsers() async {
     final response = await http.get(Uri.parse('$url/api/users'),
@@ -43,7 +45,8 @@ class _UsersScreenState extends State<UsersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: null,
+        iconTheme: IconThemeData(color: Config.primaryColor),
+        leading: SizedBox.shrink(),
           backgroundColor: Config.primaryColor,
           title: Text(
             'Contacts',
@@ -99,29 +102,47 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-  late Future<List<Message>> _messages;
-
+  List<Message> _messages = [];
   String? token;
   String url = DioProvider().url;
+  late Timer _timer;
 
-  loadpreference() async {
+  @override
+  void initState() {
+    super.initState();
+    loadPreference();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Future<void> loadPreference() async {
     final pref = await SharedPreferences.getInstance();
     setState(() {
       token = pref.getString('token');
     });
-   
+    _fetchMessages();
     _startMessageFetching();
   }
 
-  Future<List<Message>> fetchMessages() async {
-    final response = await http.get(
-        Uri.parse('$url/api/chats/${widget.user.id}'),
-        headers: {'Authorization': 'Bearer $token'});
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((message) => Message.fromJson(message)).toList();
-    } else {
-      throw Exception('Failed to load messages');
+  Future<void> _fetchMessages() async {
+    try {
+      final response = await http.get(
+          Uri.parse('$url/api/chats/${widget.user.id}'),
+          headers: {'Authorization': 'Bearer $token'});
+      if (response.statusCode == 200) {
+        List jsonResponse = json.decode(response.body);
+        setState(() {
+          _messages = jsonResponse.map((message) => Message.fromJson(message)).toList();
+        });
+      } else {
+        throw Exception('Failed to load messages');
+      }
+    } catch (e) {
+      // Handle any errors that occur during the fetch
     }
   }
 
@@ -139,29 +160,16 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     if (response.statusCode == 200) {
-      setState(() {
-        _messages = fetchMessages();
-      });
+      _fetchMessages();
     } else {
       throw Exception('Failed to send message');
     }
   }
 
   void _startMessageFetching() {
-    Future.doWhile(() async {
-      await Future.delayed(Duration(seconds: 2));
-      setState(() {
-        _messages = fetchMessages();
-      });
-      return true;
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      _fetchMessages();
     });
-  }
-
- @override
-  void initState() {
-    super.initState();
-    loadpreference();
-   //  _messages = fetchMessages();
   }
 
   @override
@@ -169,54 +177,45 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentUserId = widget.user.id;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Config.primaryColor,
-          title: Text(
-            '${widget.user.name}'.toUpperCase(),
-            style: TextStyle(color: Colors.white),
-          )),
+        backgroundColor: Config.primaryColor,
+        title: Text(
+          '${widget.user.name}'.toUpperCase(),
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
-            child: FutureBuilder<List<Message>>(
-              future: _messages,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  final messages = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: messages.length,
+            child: _messages.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: _messages.length,
                     itemBuilder: (context, index) {
-                      final message = messages[index];
+                      final message = _messages[index];
                       final isCurrentUser = message.receiverId == currentUserId;
-                          return Row(
-                      mainAxisAlignment: isCurrentUser 
-                          ? MainAxisAlignment.end 
-                          : MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8.0),
-                          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                          decoration: BoxDecoration(
-                            color: isCurrentUser ? Colors.green[100] : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            message.message,
-                            style: TextStyle(
-                              color: isCurrentUser ? Colors.green : Colors.black,
+                      return Row(
+                        mainAxisAlignment: isCurrentUser
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8.0),
+                            margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              color: isCurrentUser ? Colors.green[100] : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              message.message,
+                              style: TextStyle(
+                                color: isCurrentUser ? Colors.green : Colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
+                        ],
+                      );
                     },
-                  );
-                }
-              },
-            ),
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -245,7 +244,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
 class User {
   final int id;
   final String name;
