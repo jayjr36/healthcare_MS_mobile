@@ -1,5 +1,6 @@
-import 'package:healthcare_management_system/utils/config.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DoctorCard extends StatelessWidget {
   const DoctorCard({
@@ -11,12 +12,16 @@ class DoctorCard extends StatelessWidget {
   final String route;
   final Map<String, dynamic> doctor;
 
+
   @override
   Widget build(BuildContext context) {
-    Config().init(context);
+    double h = MediaQuery.of(context).size.height;
+    final int doctorId =
+        doctor['doctor_id']; // Assuming doctor ID is passed in the doctor map
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      height: 150,
+      height: h*0.25,
       child: GestureDetector(
         child: Card(
           elevation: 5,
@@ -24,11 +29,10 @@ class DoctorCard extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(
-                width: Config.widthSize * 0.28,
-                height: Config.heightSize * 0.28,  
+                width: MediaQuery.of(context).size.width * 0.28,
+                height: MediaQuery.of(context).size.height * 0.28,
                 child: Image.network(
                   "https://th.bing.com/th/id/OIP.2hAVCZRMcBjsE8AGQfWCVQHaHa?rs=1&pid=ImgDetMain",
-                 // "http://192.168.43.214:8000${doctor['doctor_profile']}",
                   fit: BoxFit.contain,
                 ),
               ),
@@ -46,39 +50,38 @@ class DoctorCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Spacer(),
+                    //  const Spacer(),
                       Text(
-                        "${doctor['category']}",
+                        "${doctor['category'].toString().toUpperCase()}",
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const <Widget>[
-                          Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                            size: 16,
-                          ),
-                          Spacer(
-                            flex: 1,
-                          ),
-                          Text('4.5'),
-                          Spacer(
-                            flex: 1,
-                          ),
-                          Text('Reviews'),
-                          Spacer(
-                            flex: 1,
-                          ),
-                          Text('(20)'),
-                          Spacer(
-                            flex: 7,
-                          ),
-                        ],
+                      Text(
+                        "Status: ${doctor['status'].toString().toUpperCase()}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green
+                        ),
+                      ),
+                      //const Spacer(),
+                       Text(
+                        "Experience: ${doctor['experience'].toString().toUpperCase()}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                        ),
+                      ),
+                        Text(
+                        "Doctor Id: ${doctor['doctor_id'].toString().toUpperCase()}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                        ),
                       ),
                     ],
                   ),
@@ -87,10 +90,8 @@ class DoctorCard extends StatelessWidget {
             ],
           ),
         ),
-        onTap: () {          
-          Navigator.of(context).pushNamed(
-            route, arguments: doctor
-          );
+        onTap: () {
+          Navigator.of(context).pushNamed(route, arguments: doctor);
         },
       ),
     );

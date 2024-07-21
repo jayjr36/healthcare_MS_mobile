@@ -6,7 +6,7 @@ class AppDrawer extends StatelessWidget {
 
   final String userName; 
   final String profilePictureUrl; 
-  final Function() onProfilePressed; 
+ // final Function() onProfilePressed; 
   final Function() onLogoutPressed;
   final Function() onAppointmentPressed;
   final Function() onSymptomsPressed;
@@ -16,7 +16,7 @@ class AppDrawer extends StatelessWidget {
   AppDrawer({
     required this.userName,
     required this.profilePictureUrl,
-    required this.onProfilePressed,
+   // required this.onProfilePressed,
     required this.onLogoutPressed,
     required this.onAppointmentPressed,
     required this.onSymptomsPressed,
@@ -40,16 +40,16 @@ class AppDrawer extends StatelessWidget {
               color: Config.primaryColor,
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text('View Profile'),
-            onTap: onProfilePressed,
-          ),
-          ListTile(
-            leading: Icon(Icons.schedule_send_outlined),
-            title: Text('Appointments'),
-            onTap: onAppointmentPressed,
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.person),
+          //   title: Text('View Profile'),
+          //   onTap: onProfilePressed,
+          // ),
+          // ListTile(
+          //   leading: Icon(Icons.schedule_send_outlined),
+          //   title: Text('Appointments'),
+          //   onTap: onAppointmentPressed,
+          // ),
         
           Config.spaceMedium,    
           ListTile(

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class DioProvider {
-// String url = 'http://192.168.246.22:8000';
+ //String url = 'http://192.168.132.14:8000';
   String url = 'http://64.23.247.79:8015';
   //to get token
   Future<bool> loginUser(String email, String password) async {
@@ -264,4 +264,6 @@ class DioProvider {
       print('error cancelling: $e');
     }
   }
+
+  
 }

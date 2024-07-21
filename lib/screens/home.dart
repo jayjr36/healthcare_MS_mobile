@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../components/customAppbar.dart';
 import '../components/doctorCard.dart';
 import '../utils/config.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -34,7 +35,6 @@ class HomeState extends State<Home> {
   Map<String, dynamic> user = {};
   Map<String, dynamic> doctor = {};
 
-
   Future<void> getData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
@@ -50,33 +50,50 @@ class HomeState extends State<Home> {
     }
   }
 
+  Future<List<dynamic>> fetchReviews() async {
+    final String apiUrl = 'http://64.23.247.79:8015/api/all/reviews';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      print(response.body);
+      if (response.statusCode == 200) {
+        print(response.body);
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load reviews');
+      }
+    } catch (e) {
+      print('Error fetching reviews: $e');
+      throw Exception('Failed to load reviews');
+    }
+  }
+
   @override
   void initState() {
-  
     super.initState();
-      getData();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
     Config().init(context);
     return Scaffold(
       appBar: CustomAppBar(
         appTitle: "Meet Your Doctor",
-        
       ),
       drawer: AppDrawer(
         userName: "Name",
         //user['name'],
         profilePictureUrl: 'Assets/profile1.jpg',
-        onProfilePressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserDetails(),
-            ),
-          );
-        },
+        // onProfilePressed: () {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => UserDetails(),
+        //     ),
+        //   );
+        // },
         onAppointmentPressed: () {
           Navigator.push(
             context,
@@ -128,7 +145,6 @@ class HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                     
                       Container(
                         height: 150,
                         child: PageView.builder(
@@ -166,10 +182,68 @@ class HomeState extends State<Home> {
                         ),
                       ),
                       Config.spaceMedium,
-                    ElevatedButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: ((context) => VideoCal() )));
-                    }, child: Text('Video Call')),
-                     
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: ((context) => VideoCal())));
+                      //     },
+                      //     child: Text('Video Call')),
+                      Text('What our patients say', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,fontStyle: FontStyle.italic),),
+                      FutureBuilder<List<dynamic>>(
+                        future: fetchReviews(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            final reviews = snapshot.data!;
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children:
+                                    List.generate(reviews.length, (index) {
+                                  final review = reviews[index];
+                                  return Container(
+                                    width: w*0.8,
+                                    margin: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Dr ${review['doctor_name']}',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold)),
+                                        Text('${review['patient_name']}'),
+                                        Text('${review['reviews']}'),
+                                      ],
+                                    ),
+                                  );
+                                }),
+                              ),
+                            );
+                          } else {
+                            return const Text('No reviews available');
+                          }
+                        },
+                      ),
                       Config.spaceMedium,
                       Text(
                         "Choose Your Doctor",

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:healthcare_management_system/components/button.dart';
 import '../components/customAppBar.dart';
 import '../utils/config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+
 
 class DoctorDetails extends StatefulWidget {
   const DoctorDetails({Key? key}) : super(key: key);
@@ -21,19 +25,7 @@ class DoctorDetailsState extends State<DoctorDetails> {
       appBar: CustomAppBar(
         appTitle: "Doctor Details",
         icon: const Icon(Icons.arrow_back_ios),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              setState(() {
-                isFav = !isFav;
-              });
-            },
-            icon: Icon(
-              isFav ? Icons.favorite : Icons.favorite_border_outlined,
-              color: Colors.blue,
-            ),
-          )
-        ],
+        
       ),
       body: SafeArea(
         child: Column(
@@ -68,9 +60,12 @@ class DetailHead extends StatelessWidget {
 
   final Map<dynamic, dynamic> doctor;
 
+
   @override
   Widget build(BuildContext context) {
     Config().init(context);
+    final int doctorId = doctor['doctor_id']; // Extract doctor ID
+
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -120,12 +115,12 @@ class DetailHead extends StatelessWidget {
             ),
           ),
           Config.spaceSmall,
+         
         ],
       ),
     );
   }
 }
-
 class DetailBody extends StatelessWidget {
   const DetailBody({Key? key, required this.doctor}) : super(key: key);
 
@@ -140,13 +135,13 @@ class DetailBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          DoctorInfo(
-            patients: 4,
-            // patients: doctor["patients"],
-            exp: 4,
-            // exp: doctor["experience"],
-          ),
-          Config.spaceSmall,
+          // DoctorInfo(
+          //   patients: 4,
+          //   // patients: doctor["patients"],
+          //   exp: 4,
+          //   // exp: doctor["experience"],
+          // ),
+          // Config.spaceSmall,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const <Widget>[
@@ -188,6 +183,7 @@ class DoctorInfo extends StatelessWidget {
     Config().init(context);
     return Row(
       children: <Widget>[
+        SizedBox.shrink(),
         InfoCard(
           label: "Patients",
           value: "6",
@@ -198,7 +194,7 @@ class DoctorInfo extends StatelessWidget {
         InfoCard(
           label: "Experience",
           value: '2 years',
-          //value: "$exp Years",
+         // value: "$exp Years",
         ),
         const SizedBox(
           width: 15,
